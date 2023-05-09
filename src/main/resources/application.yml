@@ -1,0 +1,4 @@
+
+integration:
+  endpoint:
+    met-weather-api: "https://api.met.no/weatherapi/metalerts/1.1"
