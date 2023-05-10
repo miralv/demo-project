@@ -1,6 +1,5 @@
 package no.demo.project.demoproject.resource;
 
-import no.demo.project.demoproject.integration.MetWeatherApiConsumer;
 import no.demo.project.demoproject.model.AlertItem;
 import no.demo.project.demoproject.service.MetWeatherService;
 import org.slf4j.Logger;
@@ -15,7 +14,7 @@ import java.util.List;
 @RequestMapping("/api/weather-alerts")
 public class MetWeatherResource {
 
-    private static final Logger logger = LoggerFactory.getLogger(MetWeatherApiConsumer.class);
+    private static final Logger logger = LoggerFactory.getLogger(MetWeatherResource.class);
     private final MetWeatherService metWeatherService;
 
     @Autowired
