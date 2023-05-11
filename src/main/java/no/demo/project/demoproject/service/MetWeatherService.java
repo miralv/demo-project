@@ -2,8 +2,8 @@ package no.demo.project.demoproject.service;
 
 import com.rometools.rome.feed.synd.SyndFeed;
 import no.demo.project.demoproject.integration.MetWeatherApiConsumer;
-import no.demo.project.demoproject.model.AlertItem;
-import no.demo.project.demoproject.service.mapper.FeedItemMapper;
+import no.demo.project.demoproject.model.WeatherAlertItem;
+import no.demo.project.demoproject.service.mapper.WeatherAlertItemMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -16,30 +16,30 @@ import static java.util.Optional.ofNullable;
 public class MetWeatherService {
 
     private final MetWeatherApiConsumer metWeatherApiConsumer;
-    private final FeedItemMapper feedItemMapper;
+    private final WeatherAlertItemMapper weatherAlertItemMapper;
 
-    public MetWeatherService(MetWeatherApiConsumer metWeatherApiConsumer, FeedItemMapper feedItemMapper) {
+    public MetWeatherService(MetWeatherApiConsumer metWeatherApiConsumer, WeatherAlertItemMapper weatherAlertItemMapper) {
         this.metWeatherApiConsumer = metWeatherApiConsumer;
-        this.feedItemMapper = feedItemMapper;
+        this.weatherAlertItemMapper = weatherAlertItemMapper;
     }
 
-    public List<AlertItem> fetchFromFeed(String county,
-                                         String eventType,
-                                         String filter) {
-        SyndFeed metData = metWeatherApiConsumer.getMetData(county, eventType);
+    public List<WeatherAlertItem> fetchFromFeed(String county,
+                                                String eventType,
+                                                String filter) {
+        SyndFeed metData = metWeatherApiConsumer.getWeatherAlerts(county, eventType);
 
         return ofNullable(metData)
                 .map(SyndFeed::getEntries)
                 .orElse(Collections.emptyList())
                 .stream()
-                .map(feedItemMapper::toDto)
+                .map(weatherAlertItemMapper::toDto)
                 .filter(it -> applyFilter(it, filter))
                 .toList();
     }
 
-    private boolean applyFilter(AlertItem alertItem, String filter) {
+    private boolean applyFilter(WeatherAlertItem weatherAlertItem, String filter) {
         if (!StringUtils.isEmpty(filter)) {
-            return alertItem.toString().toLowerCase().contains(filter.toLowerCase());
+            return weatherAlertItem.toString().toLowerCase().contains(filter.toLowerCase());
         }
         return true;
     }

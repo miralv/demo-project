@@ -27,7 +27,7 @@ public class MetWeatherApiConsumer {
         this.baseUrl = baseUrl;
     }
 
-    public SyndFeed getMetData(String county, String eventType) {
+    public SyndFeed getWeatherAlerts(String county, String eventType) {
 
         try {
             String uriString = UriComponentsBuilder.fromUriString(baseUrl)

@@ -2,8 +2,8 @@ package no.demo.project.demoproject.service;
 
 import com.rometools.rome.feed.synd.*;
 import no.demo.project.demoproject.integration.MetWeatherApiConsumer;
-import no.demo.project.demoproject.model.AlertItem;
-import no.demo.project.demoproject.service.mapper.FeedItemMapper;
+import no.demo.project.demoproject.model.WeatherAlertItem;
+import no.demo.project.demoproject.service.mapper.WeatherAlertItemMapper;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -33,26 +33,26 @@ class MetWeatherServiceTest {
     @Mock
     private MetWeatherApiConsumer metWeatherApiConsumer;
     @Mock
-    private FeedItemMapper feedItemMapper;
+    private WeatherAlertItemMapper weatherAlertItemMapper;
 
     @InjectMocks
     MetWeatherService metWeatherService;
 
     @ParameterizedTest
     @MethodSource("createInputAndExpectedOutput")
-    void fetchFromFeed(String title, String filter, List<AlertItem> expectedResult) {
+    void fetchFromFeed(String title, String filter, List<WeatherAlertItem> expectedResult) {
         SyndEntry syndEntryFire = createSyndEntry(TITLE_FIRE, DESCRIPTION_FIRE);
         SyndEntry syndEntryWind = createSyndEntry(TITLE_WIND, DESCRIPTION_WIND);
         SyndFeed syndFeed = createSyndFeed(List.of(syndEntryWind, syndEntryFire));
 
-        Mockito.when(metWeatherApiConsumer.getMetData(COUNTY, EVENT_TYPE))
+        Mockito.when(metWeatherApiConsumer.getWeatherAlerts(COUNTY, EVENT_TYPE))
                 .thenReturn(syndFeed);
-        Mockito.when(feedItemMapper.toDto(syndEntryWind))
+        Mockito.when(weatherAlertItemMapper.toDto(syndEntryWind))
                 .thenReturn(createFeedItem(TITLE_WIND, DESCRIPTION_WIND));
-        Mockito.when(feedItemMapper.toDto(syndEntryFire))
+        Mockito.when(weatherAlertItemMapper.toDto(syndEntryFire))
                 .thenReturn(createFeedItem(TITLE_FIRE, DESCRIPTION_FIRE));
 
-        List<AlertItem> result = metWeatherService.fetchFromFeed(COUNTY, EVENT_TYPE, filter);
+        List<WeatherAlertItem> result = metWeatherService.fetchFromFeed(COUNTY, EVENT_TYPE, filter);
 
         Assertions.assertThat(result)
                 .isNotNull()
@@ -60,13 +60,13 @@ class MetWeatherServiceTest {
     }
 
     private static Stream<Arguments> createInputAndExpectedOutput() {
-        AlertItem alertItemWind = createFeedItem(TITLE_WIND, DESCRIPTION_WIND);
-        AlertItem alertItemFire = createFeedItem(TITLE_FIRE, DESCRIPTION_FIRE);
+        WeatherAlertItem weatherAlertItemWind = createFeedItem(TITLE_WIND, DESCRIPTION_WIND);
+        WeatherAlertItem weatherAlertItemFire = createFeedItem(TITLE_FIRE, DESCRIPTION_FIRE);
 
         return Stream.of(
-                Arguments.of("Should return 1 element", "vind", List.of(alertItemWind)),
-                Arguments.of("Should return 2 elements", "GUL", List.of(alertItemWind, alertItemFire)),
-                Arguments.of("Should return 2 elements", null, List.of(alertItemWind, alertItemFire)),
+                Arguments.of("Should return 1 element", "vind", List.of(weatherAlertItemWind)),
+                Arguments.of("Should return 2 elements", "GUL", List.of(weatherAlertItemWind, weatherAlertItemFire)),
+                Arguments.of("Should return 2 elements", null, List.of(weatherAlertItemWind, weatherAlertItemFire)),
                 Arguments.of("Should return 0 elements", "random", Collections.emptyList())
         );
     }
@@ -86,7 +86,7 @@ class MetWeatherServiceTest {
         return syndEntry;
     }
 
-    private static AlertItem createFeedItem(String title, String description) {
-        return new AlertItem(title, description, null);
+    private static WeatherAlertItem createFeedItem(String title, String description) {
+        return new WeatherAlertItem(title, description, null);
     }
 }

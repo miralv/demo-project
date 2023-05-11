@@ -1,6 +1,6 @@
 package no.demo.project.demoproject.resource;
 
-import no.demo.project.demoproject.model.AlertItem;
+import no.demo.project.demoproject.model.WeatherAlertItem;
 import no.demo.project.demoproject.service.MetWeatherService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,9 +24,9 @@ public class MetWeatherResource {
 
     @GetMapping
     @ResponseBody
-    ResponseEntity<List<AlertItem>> readFromAlertFeed(@RequestParam(required = false) String county,
-                                                      @RequestParam(required = false) String eventType,
-                                                      @RequestParam(required = false) String filter) {
+    ResponseEntity<List<WeatherAlertItem>> readFromAlertFeed(@RequestParam(required = false) String county,
+                                                             @RequestParam(required = false) String eventType,
+                                                             @RequestParam(required = false) String filter) {
         logger.info("Fetch events with county={}, eventType={}, filter={}", county, eventType, filter);
         return ResponseEntity.ok(metWeatherService.fetchFromFeed(county, eventType, filter));
     }
